@@ -22,7 +22,11 @@ extension SwipeTableViewCell {
      - parameter completion: The closure to be executed once the animation has finished. A `Boolean` argument indicates whether or not the animations actually finished before the completion handler was called.     
      */
     public func hideSwipe(animated: Bool, completion: ((Bool) -> Void)? = nil) {
-        swipeController.hideSwipe(animated: animated, completion: completion)
+        if let swipeView: SwipeView = self.swipeView {
+            swipeView.swipeController.hideSwipe(animated: animated, completion: completion)
+        } else {
+            swipeController.hideSwipe(animated: animated, completion: completion)
+        }
     }
     
     /**
@@ -50,6 +54,10 @@ extension SwipeTableViewCell {
      - parameter completion: The closure to be executed once the animation has finished. A `Boolean` argument indicates whether or not the animations actually finished before the completion handler was called.
      */
     public func setSwipeOffset(_ offset: CGFloat, animated: Bool = true, completion: ((Bool) -> Void)? = nil) {
-        swipeController.setSwipeOffset(offset, animated: animated, completion: completion)
+        if let swipeView: SwipeView = self.swipeView {
+            swipeView.swipeController.setSwipeOffset(offset, animated: animated, completion: completion)
+        } else {
+            swipeController.setSwipeOffset(offset, animated: animated, completion: completion)
+        }
     }
 }

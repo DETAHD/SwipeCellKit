@@ -10,7 +10,7 @@ import UIKit
 extension SwipeTableViewCell {
     /// :nodoc:
     open override func accessibilityElementCount() -> Int {
-        guard state != .center else {
+        guard swipeable.state != .center else {
             return super.accessibilityElementCount()
         }
 
@@ -19,16 +19,16 @@ extension SwipeTableViewCell {
     
     /// :nodoc:
     open override func accessibilityElement(at index: Int) -> Any? {
-        guard state != .center else {
+        guard swipeable.state != .center else {
             return super.accessibilityElement(at: index)
         }
 
-        return actionsView
+        return swipeable.actionsView
     }
     
     /// :nodoc:
     open override func index(ofAccessibilityElement element: Any) -> Int {
-        guard state != .center else {
+        guard swipeable.state != .center else {
             return super.index(ofAccessibilityElement: element)
         }
 

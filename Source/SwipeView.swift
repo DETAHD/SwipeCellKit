@@ -1,5 +1,5 @@
 //
-//  CardSwipeView.swift
+//  SwipeView.swift
 //  SwipeCellKit
 //
 //  Created by Sagar Shah on 26/12/18.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-open class CardSwipeView: UIView, Swipeable {
+open class SwipeView: UIView, Swipeable {
     
     var state = SwipeState.center
     var actionsView: SwipeActionsView?
@@ -17,7 +17,7 @@ open class CardSwipeView: UIView, Swipeable {
     }
     
     var indexPath: IndexPath? {
-        if let cell: CardSwipeTableViewCell = self.cell {
+        if let cell: SwipeTableViewCell = self.cell {
             return tableView?.indexPath(for: cell)
         } else {
             return nil
@@ -35,7 +35,7 @@ open class CardSwipeView: UIView, Swipeable {
     var isPreviouslySelected = false
     
     weak var tableView: UITableView?
-    weak var cell: CardSwipeTableViewCell?
+    weak var cell: SwipeTableViewCell?
     
     /// :nodoc:
     open override var frame: CGRect {
@@ -81,9 +81,9 @@ open class CardSwipeView: UIView, Swipeable {
         resetSelectedState()
     }
     
-    private func getCell(from view: UIView) -> CardSwipeTableViewCell? {
+    private func getCell(from view: UIView) -> SwipeTableViewCell? {
         if let view: UIView = view.superview {
-            if let cell: CardSwipeTableViewCell = view as? CardSwipeTableViewCell {
+            if let cell: SwipeTableViewCell = view as? SwipeTableViewCell {
                 return cell
             } else {
                 return getCell(from: view)
@@ -151,7 +151,7 @@ open class CardSwipeView: UIView, Swipeable {
     
     func resetSelectedState() {
         if isPreviouslySelected {
-            if let cell: CardSwipeTableViewCell = self.cell {
+            if let cell: SwipeTableViewCell = self.cell {
                 if let tableView = tableView, let indexPath = tableView.indexPath(for: cell) {
                     tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
                 }
@@ -180,14 +180,14 @@ open class CardSwipeView: UIView, Swipeable {
     }
 }
 
-extension CardSwipeView: SwipeControllerDelegate {
+extension SwipeView: SwipeControllerDelegate {
     func swipeController(_ controller: SwipeController, canBeginEditingSwipeableFor orientation: SwipeActionsOrientation) -> Bool {
         return self.cell?.isEditing == false
     }
     
     func swipeController(_ controller: SwipeController, editActionsForSwipeableFor orientation: SwipeActionsOrientation) -> [SwipeAction]? {
         
-        guard let cell: CardSwipeTableViewCell = self.cell else { return nil }
+        guard let cell: SwipeTableViewCell = self.cell else { return nil }
         
         guard let tableView = tableView, let indexPath = tableView.indexPath(for: cell) else { return nil }
         
@@ -196,7 +196,7 @@ extension CardSwipeView: SwipeControllerDelegate {
     
     func swipeController(_ controller: SwipeController, editActionsOptionsForSwipeableFor orientation: SwipeActionsOrientation) -> SwipeOptions {
         
-        guard let cell: CardSwipeTableViewCell = self.cell else { return SwipeOptions() }
+        guard let cell: SwipeTableViewCell = self.cell else { return SwipeOptions() }
         
         guard let tableView = tableView, let indexPath = tableView.indexPath(for: cell) else { return SwipeOptions() }
         
@@ -211,7 +211,7 @@ extension CardSwipeView: SwipeControllerDelegate {
     
     func swipeController(_ controller: SwipeController, willBeginEditingSwipeableFor orientation: SwipeActionsOrientation) {
         
-        guard let cell: CardSwipeTableViewCell = self.cell else { return }
+        guard let cell: SwipeTableViewCell = self.cell else { return }
         
         guard let tableView = tableView, let indexPath = tableView.indexPath(for: cell) else { return }
         
@@ -225,7 +225,7 @@ extension CardSwipeView: SwipeControllerDelegate {
     
     func swipeController(_ controller: SwipeController, didEndEditingSwipeableFor orientation: SwipeActionsOrientation) {
         
-        guard let cell: CardSwipeTableViewCell = self.cell else { return }
+        guard let cell: SwipeTableViewCell = self.cell else { return }
         
         guard let tableView = tableView, let indexPath = tableView.indexPath(for: cell), let actionsView = self.actionsView else { return }
         

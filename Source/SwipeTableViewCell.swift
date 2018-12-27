@@ -16,7 +16,15 @@ import UIKit
 open class SwipeTableViewCell: UITableViewCell {
     
     /// The object that acts as the delegate of the `SwipeTableViewCell`.
-    public weak var delegate: SwipeTableViewCellDelegate?
+    public weak var delegate: SwipeTableViewCellDelegate? {
+        didSet {
+            if let swipeView: SwipeView = swipeView {
+                swipeView.delegate = delegate
+            }
+        }
+    }
+    
+    @IBOutlet public weak var swipeView: SwipeView?
     
     var state = SwipeState.center
     var actionsView: SwipeActionsView?
@@ -35,6 +43,14 @@ open class SwipeTableViewCell: UITableViewCell {
     var isPreviouslySelected = false
     
     weak var tableView: UITableView?
+    
+    var swipeable: Swipeable {
+        if let swipeView: SwipeView = self.swipeView {
+            return swipeView
+        } else {
+            return self
+        }
+    }
     
     /// :nodoc:
     open override var frame: CGRect {
@@ -81,8 +97,12 @@ open class SwipeTableViewCell: UITableViewCell {
     override open func prepareForReuse() {
         super.prepareForReuse()
         
-        reset()
-        resetSelectedState()
+        if let swipeView: SwipeView = self.swipeView {
+            swipeView.prepareForReuse()
+        } else {
+            reset()
+            resetSelectedState()
+        }
     }
     
     /// :nodoc:
@@ -95,11 +115,17 @@ open class SwipeTableViewCell: UITableViewCell {
 
             if let tableView = view as? UITableView {
                 self.tableView = tableView
-
-                swipeController.scrollView = tableView;
                 
-                tableView.panGestureRecognizer.removeTarget(self, action: nil)
-                tableView.panGestureRecognizer.addTarget(self, action: #selector(handleTablePan(gesture:)))
+                if let swipeView: SwipeView = self.swipeView {
+                    swipeView.cell = self
+                    swipeView.setTableView(tableView: tableView)
+                } else {
+                    swipeController.scrollView = tableView;
+                    
+                    tableView.panGestureRecognizer.removeTarget(self, action: nil)
+                    tableView.panGestureRecognizer.addTarget(self, action: #selector(handleTablePan(gesture:)))
+                }
+                
                 return
             }
         }
@@ -125,7 +151,7 @@ open class SwipeTableViewCell: UITableViewCell {
 
         if !UIAccessibility.isVoiceOverRunning {
             for cell in tableView?.swipeCells ?? [] {
-                if (cell.state == .left || cell.state == .right) && !cell.contains(point: point) {
+                if (cell.swipeable.state == .left || cell.swipeable.state == .right) && !cell.contains(point: point) {
                     tableView?.hideSwipeCell()
                     return false
                 }
@@ -141,7 +167,7 @@ open class SwipeTableViewCell: UITableViewCell {
     
     /// :nodoc:
     override open func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        if state == .center {
+        if swipeable.state == .center {
             super.setHighlighted(highlighted, animated: animated)
         }
     }
