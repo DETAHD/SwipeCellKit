@@ -39,7 +39,20 @@ open class SwipeTableViewCell: UITableViewCell {
         return swipeController.panGestureRecognizer;
     }
     
-    var swipeController: SwipeController!
+    var cellSwipeController: SwipeController!
+    
+    var swipeController: SwipeController! {
+        get {
+            if let swipeView: SwipeView = self.swipeView {
+                return swipeView.swipeController
+            } else {
+                return self.cellSwipeController
+            }
+        }
+        set {
+            
+        }
+    }
     var isPreviouslySelected = false
     
     weak var tableView: UITableView?
@@ -89,7 +102,7 @@ open class SwipeTableViewCell: UITableViewCell {
     func configure() {
         clipsToBounds = false
         
-        swipeController = SwipeController(swipeable: self, actionsContainerView: self)
+        cellSwipeController = SwipeController(swipeable: self, actionsContainerView: self)
         swipeController.delegate = self
     }
     

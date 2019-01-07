@@ -81,16 +81,10 @@ open class SwipeView: UIView, Swipeable {
         resetSelectedState()
     }
     
-    private func getCell(from view: UIView) -> SwipeTableViewCell? {
-        if let view: UIView = view.superview {
-            if let cell: SwipeTableViewCell = view as? SwipeTableViewCell {
-                return cell
-            } else {
-                return getCell(from: view)
-            }
-        } else {
-            return nil
-        }
+    open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard let actionsView = actionsView else { return super.hitTest(point, with: event) }
+        let modifiedPoint = actionsView.convert(point, from: self)
+        return actionsView.hitTest(modifiedPoint, with: event) ?? super.hitTest(point, with: event)
     }
     
     func setTableView(tableView: UITableView) {
@@ -100,31 +94,6 @@ open class SwipeView: UIView, Swipeable {
         tableView.panGestureRecognizer.removeTarget(self, action: nil)
         tableView.panGestureRecognizer.addTarget(self, action: #selector(handleTablePan(gesture:)))
     }
-    
-//    // Override so we can accept touches anywhere within the cell's minY/maxY.
-//    // This is required to detect touches on the `SwipeActionsView` sitting alongside the
-//    // `SwipeTableCell`.
-//    /// :nodoc:
-//    override open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-//        guard let superview = superview else { return false }
-//        
-//        let point = convert(point, to: superview)
-//        
-//        if !UIAccessibility.isVoiceOverRunning {
-//            for card in tableView?.cardSwipeCells ?? [] {
-//                if (card.state == .left || card.state == .right) && !card.contains(point: point) {
-//                    tableView?.hideSwipeCell()
-//                    return false
-//                }
-//            }
-//        }
-//        
-//        return contains(point: point)
-//    }
-//    
-//    func contains(point: CGPoint) -> Bool {
-//        return point.y > frame.minY && point.y < frame.maxY
-//    }
     
     /// :nodoc:
     override open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
